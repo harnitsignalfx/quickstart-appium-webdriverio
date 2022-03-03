@@ -37,9 +37,9 @@ spec:
             - name: SAUCE_ACCESS_KEY
               value: ***
             - name: LOC_LAT
-              value: 39.6
+              value: "39.6"
             - name: LOC_LON
-              value: -122.41
+              value: "-122.41"
             - name: SHOP_URL
               value: http://pmrum2.o11ystore.com
           restartPolicy: OnFailure
