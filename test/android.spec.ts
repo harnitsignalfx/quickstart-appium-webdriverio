@@ -2,104 +2,68 @@ describe('Android App flow', () => {
   it('should be able to order a the first product in the list', async () => {
     // Wait for the catalog to be shown
     ////*[@content-desc="
-    await $('//*[@content-desc="products screen"]').waitForDisplayed();
 
-    /**
-     * Open the first product and add it to the basket
-     */
-    await $$('//*[@content-desc="store item"]')[0].click();
-    await $('//*[@content-desc="product screen"]').waitForDisplayed();
+    // Set Timeout to be 12s
+    driver.setTimeouts('page load',12000);
+
+    const LOC_LAT = process.env.LOC_LAT || '37.79'
+    const LOC_LON = process.env.LOC_LON || '-122.41'
+    // Location - Spain
+    driver.setGeoLocation({latitude: LOC_LAT, longitude: LOC_LON, altitude: "10"});
+
+    // Set location
+
+    const SHOP_URL = process.env.SHOP_URL || 'http://pmrum.o11ystore.com'
+
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout[2]/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.EditText').setValue(SHOP_URL);
+    await driver.hideKeyboard();
+
+    // Submit location
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout[2]/android.widget.Button[1]').click();
+
+    var randomElement = Math.floor(Math.random() * (5 - 1) + 1);
+
+    var myElement = '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.ScrollView/android.widget.RelativeLayout/androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout['+randomElement+']/android.widget.ImageView';
+
+    console.log('Element Selection is : ',randomElement);
+    console.log('Item is: ',myElement);
+    // Select type writer
+    await $(myElement).click();
+
+    // Add to Cart
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.ScrollView/android.widget.RelativeLayout/android.widget.Button').click();
+
+    // Checkout
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout[2]/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.Button').click();
+
+    // Place Order
+
+
     // Make sure the button is available, if not then swipe
     await findElementBySwipe({
-      element: await $('//*[@content-desc="Add To Cart button"]'),
-      scrollableElement: await $('//*[@content-desc="product screen"]'),
+      element: await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.ScrollView/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.Button'),
+      scrollableElement: await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.ScrollView/android.widget.FrameLayout/android.widget.RelativeLayout'),
     });
-    await $('//*[@content-desc="Add To Cart button"]').click();
-    // There is an animation for updating the cart, wait for it with a hard sleep
-    await driver.pause(750);
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.ScrollView/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.Button').click();
 
-    /**
-     * Now go to the cart and proceed to the login screen
-     */
-    await $('//*[@content-desc="cart badge"]').click();
-    await $('//*[@content-desc="cart screen"]').waitForDisplayed();
-    await $('//*[@content-desc="Proceed To Checkout button"]').click();
-    await $('//*[@content-desc="login screen"]').waitForDisplayed();
 
-    /**
-     * Submit valid data,
-     * always close the keyboard to make sure that nothing will break
-     */
-    await $('//*[@content-desc="Username input field"]').setValue('bob@example.com');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="Password input field"]').setValue('10203040');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="Login button"]').click();
-    // Wait for animation to be done
-    await driver.pause(750);
-    await $('//*[@content-desc="checkout address screen"]').waitForDisplayed();
+    // If bad shop url, then wait longer to get timeout
+    if (SHOP_URL.indexOf('pmrum2') !== -1){
+      console.log('Bad shop url entered, longer pause needed');
+      await driver.pause(95750);
+    }
+    else {
+      console.log('Good shop url entered, shorter pause needed',LOC_LAT, LOC_LON, SHOP_URL);
+//      await driver.pause(2750);
+    }
 
-    /**
-     * Add the checkout address info, only the mandatory fields,
-     * always close the keyboard to make sure that nothing will break
-     */
-    await $('//*[@content-desc="Full Name* input field"]').setValue('Rebecca Winter');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="Address Line 1* input field"]').setValue('Mandorley 122');
-    await driver.hideKeyboard();
-    // The following fields might not be on the screen anymore on smaller devices,
-    // so first scroll
-    await findElementBySwipe({
-      element: await $('//*[@content-desc="City* input field"]'),
-      scrollableElement: await $('//*[@content-desc="checkout address screen"]'),
-    });
-    await $('//*[@content-desc="City* input field"]').setValue('Truro');
-    await driver.hideKeyboard();
-    await findElementBySwipe({
-      element: await $('//*[@content-desc="Zip Code* input field"]'),
-      scrollableElement: await $('//*[@content-desc="checkout address screen"]'),
-    });
-    await $('//*[@content-desc="Zip Code* input field"]').setValue('89750');
-    await driver.hideKeyboard();
-    await findElementBySwipe({
-      element: await $('//*[@content-desc="Country* input field"]'),
-      scrollableElement: await $('//*[@content-desc="checkout address screen"]'),
-    });
-    await $('//*[@content-desc="Country* input field"]').setValue('United Kingdom');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="To Payment button"]').click();
-    await $('//*[@content-desc="checkout payment screen"]').waitForDisplayed();
+    // Check if order is complete
 
-    /**
-     * Add the payment info,
-     * always close the keyboard to make sure that nothing will break
-     */
-    await $('//*[@content-desc="Full Name* input field"]').setValue('Rebecca Winter');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="Card Number* input field"]').setValue('5555555555554444');
-    await driver.hideKeyboard();
-    // The following fields might not be on the screen anymore on smaller devices,
-    // so first scroll
-    await findElementBySwipe({
-      element: await $('//*[@content-desc="Expiration Date* input field"]'),
-      scrollableElement: await $('//*[@content-desc="checkout payment screen"]'),
-    });
-    await $('//*[@content-desc="Expiration Date* input field"]').setValue('0325');
-    await driver.hideKeyboard();
-    await findElementBySwipe({
-      element: await $('//*[@content-desc="Security Code* input field"]'),
-      scrollableElement: await $('//*[@content-desc="checkout payment screen"]'),
-    });
-    await $('//*[@content-desc="Security Code* input field"]').setValue('123');
-    await driver.hideKeyboard();
-    await $('//*[@content-desc="Review Order button"]').click();
-    await $('//*[@content-desc="checkout review order screen"]').waitForDisplayed();
+    await $('/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.TextView[1]').waitForDisplayed();
+    
+    console.log('Completed Order');
 
-    /**
-     * Place the order and check if the checkout is complete
-     */
-    await $('//*[@content-desc="Place Order button"]').click();
-    await $('//*[@content-desc="checkout complete screen"]').waitForDisplayed();
+
   });
 });
 

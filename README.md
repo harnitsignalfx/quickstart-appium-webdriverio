@@ -8,64 +8,39 @@ The examples in this repository that can run on Sauce Labs use environment varia
     # For Sauce Labs Real devices in the New UI
     export SAUCE_USERNAME=********
     export SAUCE_ACCESS_KEY=*******
+    export LOC_LAT=latitude (37.39 default, Chinatown SF)
+    export LOC_LON=longitude (-122.41 default, Chinatown SF)
+    export SHOP_URL=RUM location (http://pmrum.o11ystore.com default)
 
 ### Demo app(s)
-The Native demo app that has been used for all these tests can be found [here](apps). There are three apps:
 
-- [`my.rn.demo.app.android.apk`](apps/my.rn.demo.app.android.apk) which can be used for **AND** and Android emulator
-**AND** an Android real device
-- [`my.rn.demo.app.ios.sim.zip`](apps/my.rn.demo.app.ios.sim.zip) which can **ONLY** be used for iOS simulators
-- [`my.rn.demo.app.ios.real.device.ipa`](apps/my.rn.demo.app.ios.real.device.ipa) which can **ONLY** be used for iOS real devices
+Default config.yaml for a cronjob
 
-### Install Node Modules
-Clone this repo onto your local machine. You will need to run `npm install` from the root folder. 
-
-### Upload apps to Sauce Storage
-Navigate to https://app.saucelabs.com/live/app-testing and upload the correct app file (from above) according to the environment you want to test in. You can find the apps for uploading in this project inside of the `/apps` directory
-
-## Run Native App tests on Sauce Labs Android emulators in the Sauce Labs Platform
-If you want to run the Native Android App tests on Sauce Labs emulators then you can run the Android tests with
-
-    // If using the US DC
-    npm run test.android.sauce.emu.us
-    
-    // If using the EU DC
-    npm run test.android.sauce.emu.eu
-
-The tests will be executed on a Google Pixel 3 GoogleAPI Emulator.
-
-## Run Native App tests on Sauce Labs Android real devices in the Sauce Labs Platform
-If you want to run the Native Android App tests on Sauce Labs real devices then you can run the Android tests with
-
-    // If using the US DC
-    npm run test.android.sauce.real.device.us
-    
-    // If using the EU DC
-    npm run test.android.sauce.real.device.eu
-
-The tests will be executed on a (Samsung Galaxy S(7|8|9|10|20|21).*)|(Google Pixel.*), which means every available 
-Samsung Galaxy or Google Pixel that matches this regular expression.
-
-## Run Native App tests on Sauce Labs iOS simulators in the Sauce Labs Platform
-If you want to run the Native iOS App tests on Sauce Labs simulators then you can run the iOS tests with
-
-    // If using the US DC
-    npm run test.ios.sauce.sim.us
-    
-    // If using the EU DC
-    npm run test.ios.sauce.sim.eu
-
-The tests will be executed on a iPhone 12.
-
-## Run Native App tests on Sauce Labs iOS real devices in the Sauce Labs Platform
-If you want to run the Native iOS App tests on Sauce Labs real devices then you can run the iOS tests with
-
-    // If using the US DC
-    npm run test.ios.sauce.real.device.us
-    
-    // If using the EU DC
-    npm run test.ios.sauce.real.device.eu
-
-The tests will be executed on an iPhone (11|12|13|X.*).*, which means every available iPhone that matches this regular 
-expression.
-
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: appium-mobilerum-spain
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mobilerum-spain
+            image: harnit/mobilerum-qs:1.0
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: SAUCE_USERNAME
+              value: ***
+            - name: SAUCE_ACCESS_KEY
+              value: ***
+            - name: LOC_LAT
+              value: 39.6
+            - name: LOC_LON
+              value: -122.41
+            - name: SHOP_URL
+              value: http://pmrum2.o11ystore.com
+          restartPolicy: OnFailure
+```

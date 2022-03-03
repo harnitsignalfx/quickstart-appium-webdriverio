@@ -20,17 +20,15 @@ config.capabilities = [
     platformName: 'Android',
     // We're using dynamic device allocation
     // See https://docs.saucelabs.com/mobile-apps/automated-testing/appium/real-devices/#dynamic-device-allocation
-    deviceName: '(Samsung Galaxy S(7|8|9|10|20|21).*)|(Google Pixel.*)',
+    deviceName: '(Samsung Galaxy S(7|8|9|10|20|21).*)|(Google Pixel (3|4).*)',
     automationName: 'UIAutomator2',
     // The name of the App in the Sauce Labs storage, for more info see
     // https://docs.saucelabs.com/mobile-apps/app-storage/
-    app: 'storage:filename=my.rn.demo.app.android.apk',
-    appWaitActivity: 'com.saucelabs.mydemoapp.rn.MainActivity',
-    build: buildName,
-    newCommandTimeout: 240,
+    app: 'storage:filename=mrum-11-02.apk',
+    newCommandTimeout: 2400,
     // Select only phone devices
     // @ts-ignore
-    phoneOnly: true,
+    autoGrantPermissions: true,
   },
 ];
 
