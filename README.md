@@ -12,6 +12,9 @@ The examples in this repository that can run on Sauce Labs use environment varia
     export LOC_LON=longitude (-122.41 default, Chinatown SF)
     export SHOP_URL=RUM location (http://pmrum.o11ystore.com default)
 
+### Docker image
+harnit/mobilerum-qs:2.0
+
 ### Demo app(s)
 
 Default config.yaml for a cronjob
@@ -29,7 +32,7 @@ spec:
         spec:
           containers:
           - name: mobilerum-spain
-            image: harnit/mobilerum-qs:1.0
+            image: harnit/mobilerum-qs:2.0
             imagePullPolicy: IfNotPresent
             env:
             - name: SAUCE_USERNAME
