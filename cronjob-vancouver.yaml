@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: appium-mobilerum-vancouver
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mobilerum-vancouver
+            image: harnit/mobilerum-qs:2.0
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: SAUCE_USERNAME
+              value: <USER_NAME>
+            - name: SAUCE_ACCESS_KEY
+              value: <ACCESS_KEY>
+            - name: LOC_LAT
+              value: "49.24"
+            - name: LOC_LON
+              value: "-123.11"
+            - name: SHOP_URL
+              value: http://pmrum.o11ystore.com
+          restartPolicy: OnFailure

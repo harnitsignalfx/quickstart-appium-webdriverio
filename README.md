@@ -13,7 +13,11 @@ The examples in this repository that can run on Sauce Labs use environment varia
     export SHOP_URL=RUM location (http://pmrum.o11ystore.com default)
 
  ### Docker image
- harnit/mobilerum-qs:1.0
+For Real devices
+harnit/mobilerum-qs:1.0
+
+For Emulator
+harnit/mobilerum-qs:2.0
 
 ### Demo app(s)
 
